@@ -2,7 +2,7 @@ import os
 
 import requests
 
-from config import HF_API_URL
+from config.config import HF_API_URL
 
 
 def generate_image(prompt: str) -> bytes:

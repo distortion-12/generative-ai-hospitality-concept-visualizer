@@ -2,7 +2,7 @@ import os
 
 from google import genai
 
-from config import GEMINI_MODEL
+from config.config import GEMINI_MODEL
 
 
 def generate_text(prompt: str) -> str:

@@ -6,7 +6,7 @@ These notes are organized to match the High Level Design table of contents and c
 
 ### 1.1 Scope of the document
 
-This document describes the high-level design of a Streamlit-based multimodal Generative AI demo for hospitality concept visualization. The system accepts a user prompt and generates both descriptive text and a concept image using external AI APIs.
+This document describes the high-level design of a Streamlit-based multimodal Generative AI project for hospitality concept visualization. The system accepts a user prompt and generates both descriptive text and a concept image using external AI APIs.
 
 ### 1.2 Intended Audience
 
@@ -22,20 +22,19 @@ The system is a lightweight web application that runs locally on Streamlit. It i
 - Google Gemini API for text generation
 - Hugging Face Stable Diffusion inference API for image generation
 
-The application is designed as a demo-oriented proof of concept focused on simple user interaction and clear multimodal output.
+The application is designed for simple user interaction and clear multimodal output with a structure that is ready for future extension.
 
 ## 2. System Design
 
 ### 2.1 Application Design
 
-The application uses a simple single-tier app structure:
+The application uses a modular package structure:
 
-- Presentation layer: Streamlit UI in `app.py`
-- Service layer: Gemini and Hugging Face API integrations in dedicated service files
-- Shared configuration and validation utilities in helper modules
-- External services: Gemini API and Hugging Face model inference endpoint
-
-This design was chosen to keep the demo minimal, understandable, and easy to present.
+- Presentation layer: Streamlit UI in `app/main.py`
+- Service layer: Gemini and Hugging Face API integrations in `services/`
+- Configuration and validation utilities in `config/` and `utils/`
+- Database-ready package reserved in `database/`
+- Documentation stored in `docs/`
 
 ### 2.2 Process Flow
 
@@ -70,38 +69,36 @@ This design was chosen to keep the demo minimal, understandable, and easy to pre
 - Displays image output
 - Displays error messages
 
-#### Component 2: Gemini Text Generation
+#### Component 2: Gemini Text Generation Service
 
 - Reads `GEMINI_API_KEY` from environment
 - Creates Gemini client using `from google import genai`
 - Calls `client.models.generate_content(...)`
 - Returns generated text as string
 
-#### Component 3: Hugging Face Image Generation
+#### Component 3: Hugging Face Image Generation Service
 
 - Reads `HUGGINGFACE_API_KEY` from environment
 - Sends HTTP POST request using `requests`
 - Uses Stable Diffusion model endpoint
 - Returns image bytes for display
 
-#### Component 4: Configuration and Utilities
+#### Component 4: Config and Utilities
 
 - Stores model names and endpoint constants
 - Validates user input before making API calls
 
-#### Component 5: External API Services
+#### Component 5: Database Package
 
-- Gemini handles text generation
-- Hugging Face handles image generation
+- Reserved for final-stage persistence integration
+- Keeps the project structure prepared for future expansion
 
 ### 2.5 Key Design Considerations
 
-- Simplicity: small modular project for quick understanding
-- Demonstrability: focused on visible text and image output
-- Minimal modularity: UI, service logic, config, and validation are separated
-- Maintainability: short and readable code
-- API-based integration: no local model hosting required
-- Local deployment: suitable for classroom or presentation demo
+- Simplicity with modularity
+- Clear separation of UI, services, config, and utilities
+- Easy presentation and maintainability
+- Ready for future persistence and scaling improvements
 
 ### 2.6 API Catalogue
 
@@ -125,87 +122,55 @@ This design was chosen to keep the demo minimal, understandable, and easy to pre
 
 ### 3.1 Data Model
 
-This demo does not use a persistent database. The main data objects are transient runtime values:
+The current version does not persist generation data. Runtime objects include:
 
-- `prompt`: input text from user
-- `text_result`: generated text response
-- `image_result`: generated image bytes
+- `prompt`
+- `text_result`
+- `image_result`
 
 ### 3.2 Data Access Mechanism
 
 - Prompt is collected from Streamlit input widget
 - External AI services are accessed through SDK/HTTP APIs
-- Returned data is used in memory only during request processing
+- Returned data is used in memory during request processing
 
 ### 3.3 Data Retention Policies
 
 - No local persistence of prompts or outputs by default
 - Data remains in process memory only for the active request/session
-- Logs may exist only if manually enabled during local execution
 
 ### 3.4 Data Migration
 
-No data migration is required because the application has no structured persistent storage.
+No migration is required in the current version.
 
 ## 4. Interfaces
 
-The system exposes a browser-based user interface through Streamlit.
-
-User interface elements:
-
-- Title banner
-- Prompt input box
-- Generate button
-- Generated text section
-- Generated image section
-- Error message display
-
-External interfaces:
-
+- Browser-based UI through Streamlit
 - Gemini API interface
 - Hugging Face inference interface
 
 ## 5. State and Session Management
 
-- Streamlit manages per-session UI state during the browser session
-- The app does not maintain custom long-term session state
+- Streamlit manages per-session UI state
 - Each generation request is processed independently
 
 ## 6. Caching
 
-- No explicit caching is implemented in the current demo
-- This keeps behavior simple and transparent for presentation
-- Future enhancement could cache repeated prompts or generated results
+- No explicit caching is implemented in the current version
 
 ## 7. Non-Functional Requirements
 
 ### 7.1 Security Aspects
 
-- API keys are stored in environment variables, not hardcoded in code for normal use
+- API keys are stored in environment variables
 - Sensitive credentials should not be committed to version control
-- HTTPS is used for communication with external APIs
-- The demo should be used only with controlled access in local development or classroom presentation setup
-
-Recommended improvements for production:
-
-- Secret management tool or `.env` file with secure handling
-- Role-based access control
-- Request logging and monitoring
-- API usage throttling
+- HTTPS is used for external API communication
 
 ### 7.2 Performance Aspects
 
-- Application performance depends mainly on external API latency
+- Performance depends largely on external API latency
 - Gemini text generation is typically faster than image generation
-- Hugging Face image generation may take longer depending on model availability and queue time
-- The UI includes a spinner to indicate active processing
-
-Potential future improvements:
-
-- Parallel API invocation
-- Response caching
-- Retry logic with backoff
-- Async processing for better responsiveness
+- The UI includes a spinner to indicate processing
 
 ## 8. References
 
@@ -213,10 +178,3 @@ Potential future improvements:
 - Google Gemini API Python SDK documentation
 - Hugging Face Inference API documentation
 - Python `requests` documentation
-
-## Additional Notes For Report Team
-
-- This project is best described as a proof-of-concept or demo prototype.
-- Architecture is intentionally minimal to keep the implementation easy to explain.
-- There is no database, no authentication layer, and no persistent storage in the current scope.
-- The strongest demo value is the end-to-end multimodal flow from one prompt to two generated outputs.

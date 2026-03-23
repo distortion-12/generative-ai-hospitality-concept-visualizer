@@ -1,8 +1,9 @@
 import streamlit as st
 
-from gemini_service import generate_text
-from image_service import generate_image
-from utils import validate_prompt
+from services.gemini_service import generate_text
+from services.image_service import generate_image
+from utils.utils import validate_prompt
+
 
 st.set_page_config(page_title="Hospitality Concept Visualizer", layout="wide")
 

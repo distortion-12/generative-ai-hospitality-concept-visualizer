@@ -38,21 +38,33 @@ The result is shown in a clean Streamlit web interface, making the project suita
 
 ```text
 team_handoff_demo/
-|-- app.py
-|-- config.py
-|-- gemini_service.py
-|-- image_service.py
-|-- utils.py
+|-- app/
+|   |-- __init__.py
+|   `-- main.py
+|-- services/
+|   |-- __init__.py
+|   |-- gemini_service.py
+|   `-- image_service.py
+|-- database/
+|   |-- __init__.py
+|   `-- db.py
+|-- config/
+|   |-- __init__.py
+|   `-- config.py
+|-- utils/
+|   |-- __init__.py
+|   `-- utils.py
+|-- docs/
+|   |-- HLD_REPORT_NOTES.md
+|   `-- PROJECT_OVERVIEW.md
 |-- requirements.txt
 |-- .env.example
 |-- README.md
-|-- PROJECT_OVERVIEW.md
-|-- HLD_REPORT_NOTES.md
 ```
 
 ## Module Description
 
-### `app.py`
+### `app/main.py`
 
 Main Streamlit application file.
 
@@ -101,7 +113,7 @@ The application follows a simple service-based architecture with clear separatio
 
 #### 1. Presentation Layer
 
-Implemented using Streamlit in `app.py`.
+Implemented using Streamlit in `app/main.py`.
 
 Responsibilities:
 
@@ -134,7 +146,7 @@ Third-party AI services used by the application.
 User
   |
   v
-Streamlit UI (app.py)
+Streamlit UI (app/main.py)
   |
   +--> Gemini Service (gemini_service.py) --> Google Gemini API
   |
@@ -168,9 +180,9 @@ Rendered Back in Streamlit UI
 
 ### Internal Processing
 
-- validation through `utils.py`
-- text request through `gemini_service.py`
-- image request through `image_service.py`
+- validation through `utils/utils.py`
+- text request through `services/gemini_service.py`
+- image request through `services/image_service.py`
 
 ### Output
 
@@ -259,7 +271,7 @@ venv\Scripts\activate.bat
 pip install -r requirements.txt
 $env:GEMINI_API_KEY="your_gemini_api_key"
 $env:HUGGINGFACE_API_KEY="your_huggingface_api_key"
-venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1 --server.port 8501
+venv\Scripts\python.exe -m streamlit run app/main.py --server.address 127.0.0.1 --server.port 8501
 ```
 
 Then open:
